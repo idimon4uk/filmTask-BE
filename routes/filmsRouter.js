@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {films} = require('../controllers')
+const {films} = require('../controllers');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/',films.findAll);
 
-router.post('/file',(req,res)=>{
-    console.log();
-    res.status(200).json(req.body);
-})
+router.post('/file',upload.single('document'),films.import)
 
 router.post('/',films.add)
 

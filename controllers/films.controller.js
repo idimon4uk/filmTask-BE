@@ -1,4 +1,10 @@
 const { Films, Stars } = require('../sequelize/models')
+const file = require('../helpers/parser')
+
+function* iteration(arr) {
+    yield* arr;
+}
+
 module.exports = {
     async findAll(req, res) {
         try {
@@ -73,6 +79,30 @@ module.exports = {
                 res.status(403).json({ Error: `Film by ${id} not found (403)` })
             }
 
+        }
+        catch (err) {
+            res.status(500).json({ error: err.message })
+        }
+    },
+    async import(req, res) {
+        try {
+            let filmsObj = file.parse(req.file.buffer.toString());
+            let filmsList = iteration(filmsObj);
+            let film = filmsList.next();
+            let films = [];
+            while (film.value) {
+                let uploadedFilms = await Films.upload(
+                    {
+                        title: film.value.Title,
+                        releaseDate: parseInt(film.value.ReleaseYear),
+                        format: film.value.Format,
+                        stars: film.value.Stars
+                      }
+                );
+                films.push(uploadedFilms)
+                film = filmsList.next();
+            }
+            res.status(200).json(films)
         }
         catch (err) {
             res.status(500).json({ error: err.message })

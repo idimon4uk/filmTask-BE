@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
           { ...object },
           {
             where: {
-              id:parseInt(id)
+              id: parseInt(id)
             }
           },
           { transaction: t1 }
@@ -88,7 +88,18 @@ module.exports = (sequelize, DataTypes) => {
         })
       })
     }
-    // associations can be defined here
+
+    Films.import = function (object) {
+
+      return Promise.all(object.map(film => {
+        return Films.upload({
+          title: film.Title,
+          releaseDate: parseInt(film.ReleaseYear),
+          format: film.Format,
+          stars: film.Stars
+        })
+      }))
+    }
   };
   return Films;
 };
