@@ -9,7 +9,7 @@ let parse = (text) => {
 
         }
         else {
-            let keyValue = e.replace(' ', '').split(':');
+            let keyValue = e.replace(' ', '').replace(' :',':').replace(': ',':').split(':');
             block[keyValue[0]] = keyValue[1];
         }
 
