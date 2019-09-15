@@ -1,9 +1,6 @@
 const { Films, Stars } = require('../sequelize/models')
 const file = require('../helpers/parser')
 
-function* iteration(arr) {
-    yield* arr;
-}
 
 module.exports = {
     async findAll(req, res) {
@@ -87,6 +84,11 @@ module.exports = {
     async import(req, res) {
         try {
             let filmsObj = file.parse(req.file.buffer.toString());
+            
+            function* iteration(arr) {
+                yield* arr;
+            }
+
             let filmsList = iteration(filmsObj);
             let film = filmsList.next();
             let films = [];

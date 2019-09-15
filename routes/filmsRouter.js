@@ -6,7 +6,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/',films.findAll);
 
-router.post('/file',upload.single('document'),films.import)
+router.post('/import',upload.single('file'),films.import)
 
 router.post('/',films.add)
 
